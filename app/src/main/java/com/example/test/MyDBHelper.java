@@ -6,7 +6,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class MyDBHelper extends SQLiteOpenHelper {
     private static final String name = "mdatabase.db";
-    private static final int version = 6; // 增加了 typeIndex 列，所以版本號增加
+    private static final int version = 7;
 
     MyDBHelper(Context context) {
         super(context, name, null, version);
@@ -14,7 +14,7 @@ public class MyDBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("CREATE TABLE accountTable( amount INTEGER NOT NULL, date TEXT NOT NULL, typeIndex INTEGER NOT NULL)");
+        db.execSQL("CREATE TABLE accountTable( amount INTEGER NOT NULL, date TEXT NOT NULL, typeIndex INTEGER NOT NULL,annotation TEXT NOT NULL)");
     }
 
     @Override
