@@ -31,11 +31,9 @@ class MainActivity : AppCompatActivity() {
     private lateinit var ed_amount: EditText
     private lateinit var ed_date: EditText
     private lateinit var btn_insert: Button
-    private lateinit var btn_query: Button
-    private lateinit var btn_update: Button
     private lateinit var btn_pick_date: Button
-    private lateinit var listView: ListView
     private lateinit var spinner_type: Spinner
+    private lateinit var annotation: EditText
     private val itemsForSpinner = arrayOf("食物", "交通", "娛樂", "住宿", "購物")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,16 +42,11 @@ class MainActivity : AppCompatActivity() {
         ed_amount = findViewById(R.id.ed_income)
         ed_date = findViewById(R.id.ed_date)
         btn_insert = findViewById(R.id.btn_insert)
-        btn_query = findViewById(R.id.btn_query)
         btn_pick_date = findViewById(R.id.btn_pick_date)
-        listView = findViewById(R.id.listview)
         spinner_type = findViewById(R.id.spinner_type)
-        btn_update = findViewById(R.id.btn_update)
-
+        annotation=findViewById(R.id.annotation)
         // 設定ListView的適配器以顯示items列表中的資料
         adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, items)
-        listView.adapter = adapter
-
 // 設定Spinner以顯示itemsForSpinner列表中的資料
         val spinnerAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, itemsForSpinner)
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
@@ -70,8 +63,6 @@ class MainActivity : AppCompatActivity() {
                 val selectedType = spinner_type.selectedItem.toString()
                 // 將選中的項目加入到selectedTypes列表中
                 selectedTypes.add(selectedType)
-                // 通知ListView的適配器更新數據
-                adapter.notifyDataSetChanged()
             }
             // 當沒有選擇項目時觸發
             override fun onNothingSelected(parent: AdapterView<*>?) {
@@ -83,9 +74,9 @@ class MainActivity : AppCompatActivity() {
             val amount = ed_amount.text.toString()
             val date = ed_date.text.toString()
             val selectedType = spinner_type.selectedItem.toString()
-
+            val annotation=annotation.text.toString()
             // 檢查輸入的金額和日期是否為空
-            if (amount.isEmpty() || date.isEmpty()) {
+            if (amount.isEmpty() || date.isEmpty()||annotation.isEmpty()) {
                 showToast("欄位請勿留空")  // 若為空，顯示錯誤提示
                 return@setOnClickListener
             }
@@ -93,45 +84,14 @@ class MainActivity : AppCompatActivity() {
             try {
                 // 嘗試執行插入操作
                 dbrw.execSQL(
-                    "INSERT INTO accountTable( amount, date, typeIndex) VALUES ( ?, ?, ?)",
-                    arrayOf(amount, date, itemsForSpinner.indexOf(selectedType))
+                    "INSERT INTO accountTable( amount, date, typeIndex,annotation) VALUES ( ?, ?, ?,?)",
+                    arrayOf(amount, date, itemsForSpinner.indexOf(selectedType),annotation)
                 )
                 showToast("已新增記錄")  // 顯示插入成功的提示
                 clearEditTexts()  // 清除 EditText 中的輸入
             } catch (e: SQLException) {
                 handleDatabaseError(e)  // 處理資料庫操作時的錯誤
             }
-        }
-
-        btn_update.setOnClickListener {
-            // 從 EditText 和 Spinner 獲取相應的值
-            val amount = ed_amount.text.toString()
-            val date = ed_date.text.toString()
-            val selectedType = spinner_type.selectedItem.toString()
-
-            // 檢查輸入的金額和日期是否為空
-            if (amount.isEmpty() || date.isEmpty()) {
-                showToast("欄位請勿留空")
-                return@setOnClickListener
-            }
-
-            try {
-                // 嘗試執行更新操作
-                dbrw.execSQL(
-                    "UPDATE accountTable SET amount = ?, typeIndex = ? WHERE date = ?",
-                    arrayOf(amount, itemsForSpinner.indexOf(selectedType), date)
-                )
-                showToast("已更新記錄")  // 顯示更新成功的提示
-                clearEditTexts()  // 清除 EditText 中的輸入
-            } catch (e: SQLException) {
-                handleDatabaseError(e)  // 處理資料庫操作時的錯誤
-            }
-        }
-
-
-        btn_query.setOnClickListener {
-            val currentDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
-            queryDataByDate(currentDate)
         }
 
         btn_pick_date.setOnClickListener {
@@ -186,6 +146,7 @@ class MainActivity : AppCompatActivity() {
     private fun clearEditTexts() {
         ed_amount.setText("")  // 清空金額的 EditText 中的文字
         ed_date.setText("")    // 清空日期的 EditText 中的文字
+        annotation.setText("")
     }
 
     private fun handleDatabaseError(e: SQLException) {
@@ -193,36 +154,6 @@ class MainActivity : AppCompatActivity() {
         showToast("操作失敗: ${e.message}")
     }
 
-    private fun queryDataByDate(date: String) {
-        val c = dbrw.rawQuery("SELECT * FROM accountTable WHERE date = ?", arrayOf(date))
-        handleQueryResults(c)
-    }
-
-    private fun handleQueryResults(c: Cursor) {
-        items.clear()  // 清空現有的 items 列表，準備放入新的資料
-
-        // 檢查 Cursor 是否有效且有資料
-        if (c != null && c.moveToFirst()) {
-            showToast("共有${c.count}筆")  // 顯示當前查詢結果的資料筆數
-
-            // 使用 do-while 循環 Cursor 中的每一行
-            do {
-                val amount = c.getString(0)  // 從第一列獲取金額資料
-                val date = c.getString(1)    // 從第二列獲取日期資料
-                val typeIndex = c.getInt(2)  // 從第三列獲取類型的索引值
-                val type = if (typeIndex >= 0 && typeIndex < itemsForSpinner.size) itemsForSpinner[typeIndex] else "未知"
-                // 如果索引值在合法範圍內，從 itemsForSpinner 中取得對應的類型名稱，否則顯示 "未知"
-
-                // 將獲取到的資料組合成一個字符串，然後添加到 items 列表中
-                items.add("金額: $amount\t\t\t日期: $date\t\t\t類型: $type")
-            } while (c.moveToNext())  // 移動到下一行，直到所有資料都被處理完畢
-
-            adapter.notifyDataSetChanged()  // 通知 Adapter 更新資料
-            c.close()  // 關閉 Cursor
-        } else {
-            showToast("當日沒有資料")  // 如果 Cursor 為空或沒有資料，顯示相應的提示消息
-        }
-    }
 
     override fun onDestroy() {
         super.onDestroy()

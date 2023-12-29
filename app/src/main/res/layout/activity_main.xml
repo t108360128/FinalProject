@@ -5,18 +5,6 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <ListView
-        android:id="@+id/listview"
-        android:layout_width="402dp"
-        android:layout_height="412dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="72dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent" />
-
     <EditText
         android:id="@+id/ed_income"
         android:layout_width="0dp"
@@ -39,19 +27,9 @@
         android:textColor="@android:color/black"
         android:textSize="22sp"
         app:layout_constraintBottom_toBottomOf="@+id/ed_income"
-        app:layout_constraintStart_toStartOf="@+id/incomeTitle"
-        app:layout_constraintTop_toTopOf="@+id/ed_income" />
+        app:layout_constraintTop_toTopOf="@+id/ed_income"
+        tools:ignore="MissingConstraints" />
 
-    <TextView
-        android:id="@+id/incomeTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="收入"
-        android:textColor="@android:color/black"
-        android:textSize="22sp"
-        app:layout_constraintBottom_toBottomOf="@+id/ed_income"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/ed_income" />
 
     <EditText
         android:id="@+id/ed_date"
@@ -73,77 +51,51 @@
         android:textColor="@android:color/black"
         android:textSize="22sp"
         app:layout_constraintBottom_toBottomOf="@+id/ed_date"
-        app:layout_constraintStart_toStartOf="@+id/incomeTitle"
-        app:layout_constraintTop_toTopOf="@+id/ed_date" />
+        app:layout_constraintTop_toTopOf="@+id/ed_date"
+        tools:ignore="MissingConstraints" />
+
 
     <Spinner
         android:id="@+id/spinner_type"
-        android:layout_width="215dp"
-        android:layout_height="32dp"
-        android:layout_marginTop="24dp"
+        android:layout_width="174dp"
+        android:layout_height="35dp"
+        android:layout_marginTop="12dp"
         app:layout_constraintEnd_toEndOf="@id/ed_date"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/ed_date"
         app:layout_constraintTop_toBottomOf="@id/ed_date" />
 
-
-
     <LinearLayout
         android:id="@+id/linearLayout"
-        android:layout_width="369dp"
-        android:layout_height="60dp"
+        android:layout_width="208dp"
+        android:layout_height="53dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/spinner_type">
 
+
         <Button
             android:id="@+id/btn_insert"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="129dp"
+            android:layout_height="match_parent"
             android:layout_marginEnd="4dp"
             android:layout_weight="1"
             android:text="新增"
             tools:ignore="ButtonStyle" />
 
-
-        <Button
-            android:id="@+id/btn_update"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="4dp"
-            android:layout_weight="1"
-            android:text="修改"
-            tools:ignore="ButtonStyle" />
-
-        <Button
-            android:id="@+id/btn_query"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="4dp"
-            android:layout_weight="1"
-            android:text="查詢"
-            tools:ignore="ButtonStyle" />
-
         <Button
             android:id="@+id/btn_pick_date"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:text="選擇日期"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/spinner_type" />
-
-        <FrameLayout
-            android:id="@+id/frame_container"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_weight="1" />
 
 
     </LinearLayout>
@@ -159,4 +111,43 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:menu="@menu/bottom_navigation_menu" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="類型:"
+        android:textColor="@android:color/black"
+        android:textSize="22sp"
+        app:layout_constraintBottom_toBottomOf="@+id/spinner_type"
+        app:layout_constraintTop_toTopOf="@+id/spinner_type"
+        app:layout_constraintVertical_bias="0.0"
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="0dp" />
+
+    <EditText
+        android:id="@+id/annotation"
+        android:layout_width="267dp"
+        android:layout_height="193dp"
+        android:layout_marginTop="8dp"
+        android:ems="10"
+        android:hint=""
+        android:gravity="start"
+        android:inputType="text"
+        app:layout_constraintStart_toEndOf="@id/textView2"
+        app:layout_constraintTop_toBottomOf="@id/linearLayout"
+        tools:ignore="MissingConstraints" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="61dp"
+        android:layout_height="48dp"
+        android:text="備註:"
+        android:textColor="@android:color/black"
+        android:textSize="22sp"
+        app:layout_constraintBottom_toBottomOf="@+id/annotation"
+        app:layout_constraintTop_toTopOf="@+id/annotation"
+        app:layout_constraintVertical_bias="0.0"
+        app:layout_constraintEnd_toStartOf="@id/annotation"
+        tools:layout_editor_absoluteX="16dp" />
 </androidx.constraintlayout.widget.ConstraintLayout>
