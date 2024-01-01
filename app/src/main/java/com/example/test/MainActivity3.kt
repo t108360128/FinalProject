@@ -8,10 +8,10 @@ import android.database.Cursor
 import android.database.SQLException
 import android.database.sqlite.SQLiteDatabase
 import android.os.Bundle
+import android.util.Log
 import android.widget.ArrayAdapter
 import android.widget.Button
 
-import android.widget.EditText
 import android.widget.ListView
 import android.widget.Spinner
 import android.widget.Toast
@@ -35,7 +35,9 @@ class MainActivity3 : AppCompatActivity() {
     private lateinit var spinner_am3_type: Spinner //
     private lateinit var btn_query: Button // 查詢
     private val itemsForSpinner = arrayOf("食物", "交通", "娛樂", "住宿", "購物") // 類型表內容
-    private lateinit var selectedDate: String
+    var selectedDate: String = ""
+    var selectedType: String = ""
+
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,7 +66,7 @@ class MainActivity3 : AppCompatActivity() {
             // 當選擇項目時觸發
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 // 獲取選中的項目
-                val selectedType = spinner_am3_type.selectedItem.toString()
+                selectedType = spinner_am3_type.selectedItem.toString()
                 // 將選中的項目加入到selectedTypes列表中
                 selectedTypes.add(selectedType)
             }
@@ -98,19 +100,13 @@ class MainActivity3 : AppCompatActivity() {
         btn_query.setOnClickListener {
             // 從 TextView 和 Spinner 獲取相應的值
             val date = selectedDate
-            val selectedType = spinner_am3_type.selectedItem.toString()
-
-            // 檢查輸入的金額和日期是否為空
-            /*if (date.isEmpty()) {
-                showToast("欄位請勿留空")  // 若為空，顯示錯誤提示
-                return@setOnClickListener
-            }*/
+            var selected: Int = itemsForSpinner.indexOf(selectedType)
 
             //查找
             try {
-                val queryString = if (date.isEmpty())
-                    "SELECT * FROM accountTable WHERE "
-                else
+                val queryString = if (date.isBlank()) {
+                    "SELECT * FROM accountTable WHERE typeIndex LIKE '${selected}'"
+                } else
                     "SELECT * FROM accountTable WHERE date LIKE '${date}'"
 
                 val c = dbrw.rawQuery(queryString, null)
@@ -119,12 +115,15 @@ class MainActivity3 : AppCompatActivity() {
                 showToast("共有${c.count}筆資料")
                 for (i in 0 until c.count) {
                     //加入新資料
-                    items.add("金額：${c.getInt(0)}\t\t\t\t 日期:${c.getString(1)}\t\t\t\t")
+                    items.add("金額：${c.getInt(0)}\t\t\t\t 日期:${c.getString(1)}\t\t\t\n備註：${c.getString(3)} ")
                     c.moveToNext() //移動到下一筆
                 }
                 adapter.notifyDataSetChanged() //更新列表資料
                 c.close() //關閉 Cursor
+                clearTextView()
+
             } catch (e: SQLException) {
+                Log.e("YourTag", "執行資料庫查詢時發生錯誤", e)
                 handleDatabaseError(e)  // 處理資料庫操作時的錯誤
             }
         }
@@ -167,7 +166,7 @@ class MainActivity3 : AppCompatActivity() {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 
-    private fun clearEditTexts() {
+    private fun clearTextView() {
         tv_showdate.setText("")    // 清空日期的 TextView 中的文字
     }
 

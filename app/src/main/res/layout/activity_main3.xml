@@ -52,7 +52,8 @@
     <TextView
         android:id="@+id/tv_showdate"
         android:text=""
-        android:layout_marginTop="12dp"
+        android:textSize="22sp"
+        android:layout_marginTop="10dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toEndOf="@id/tv_date"
