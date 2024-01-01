@@ -34,6 +34,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var btn_pick_date: Button
     private lateinit var spinner_type: Spinner
     private lateinit var annotation: EditText
+    private var totalAmount = 0
     private val itemsForSpinner = arrayOf("食物", "交通", "娛樂", "住宿", "購物")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -89,6 +90,10 @@ class MainActivity : AppCompatActivity() {
                 )
                 showToast("已新增記錄")  // 顯示插入成功的提示
                 clearEditTexts()  // 清除 EditText 中的輸入
+
+                // 累加金額的值
+                totalAmount += amount.toInt()
+
             } catch (e: SQLException) {
                 handleDatabaseError(e)  // 處理資料庫操作時的錯誤
             }
@@ -124,6 +129,7 @@ class MainActivity : AppCompatActivity() {
                 R.id.page2 -> {
                     // 切换到 Activity2
                     val intent = Intent(this, MainActivity2::class.java)
+                    intent.putExtra("TOTAL_AMOUNT_VALUE", totalAmount.toString())
                     startActivity(intent)
                     true
                 }
